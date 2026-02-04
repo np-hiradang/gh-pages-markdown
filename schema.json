@@ -1,0 +1,730 @@
+{
+  "name": "npdb",
+  "tables": [
+    {
+      "name": "marianne.flyway_schema_history",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "installed_rank",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "version",
+          "type": "varchar(50)",
+          "nullable": true
+        },
+        {
+          "name": "description",
+          "type": "varchar(200)",
+          "nullable": false
+        },
+        {
+          "name": "type",
+          "type": "varchar(20)",
+          "nullable": false
+        },
+        {
+          "name": "script",
+          "type": "varchar(1000)",
+          "nullable": false
+        },
+        {
+          "name": "checksum",
+          "type": "integer",
+          "nullable": true
+        },
+        {
+          "name": "installed_by",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "installed_on",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "now()"
+        },
+        {
+          "name": "execution_time",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "success",
+          "type": "boolean",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "flyway_schema_history_pk",
+          "def": "CREATE UNIQUE INDEX flyway_schema_history_pk ON marianne.flyway_schema_history USING btree (installed_rank)",
+          "table": "marianne.flyway_schema_history",
+          "columns": [
+            "installed_rank"
+          ]
+        },
+        {
+          "name": "flyway_schema_history_s_idx",
+          "def": "CREATE INDEX flyway_schema_history_s_idx ON marianne.flyway_schema_history USING btree (success)",
+          "table": "marianne.flyway_schema_history",
+          "columns": [
+            "success"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "flyway_schema_history_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (installed_rank)",
+          "table": "marianne.flyway_schema_history",
+          "referenced_table": "",
+          "columns": [
+            "installed_rank"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.users",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "varchar(10)",
+          "nullable": false
+        },
+        {
+          "name": "cognito_user_id",
+          "type": "uuid",
+          "nullable": true
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_users",
+          "def": "CREATE UNIQUE INDEX pk_users ON marianne.users USING btree (user_id)",
+          "table": "marianne.users",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "uq_users",
+          "def": "CREATE UNIQUE INDEX uq_users ON marianne.users USING btree (email)",
+          "table": "marianne.users",
+          "columns": [
+            "email"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "pk_users",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (user_id)",
+          "table": "marianne.users",
+          "referenced_table": "",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "uq_users",
+          "type": "UNIQUE",
+          "def": "UNIQUE (email)",
+          "table": "marianne.users",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.user_shops",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "varchar(10)",
+          "nullable": false
+        },
+        {
+          "name": "shop_code",
+          "type": "character(10)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_user_shops",
+          "def": "CREATE UNIQUE INDEX pk_user_shops ON marianne.user_shops USING btree (user_id, shop_code)",
+          "table": "marianne.user_shops",
+          "columns": [
+            "user_id",
+            "shop_code"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "fk_user_shops_user_id",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)",
+          "table": "marianne.user_shops",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "pk_user_shops",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (user_id, shop_code)",
+          "table": "marianne.user_shops",
+          "referenced_table": "",
+          "columns": [
+            "user_id",
+            "shop_code"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.csv_uploads",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "varchar(10)",
+          "nullable": false
+        },
+        {
+          "name": "contact_user_name",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "contact_user_email",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "shop_code",
+          "type": "varchar(10)",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "upload_bucket_name",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "error_bucket_name",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "upload_file_key",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "error_file_key",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "upload_file_name",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "error_file_name",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "upload_type",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "transaction_amount",
+          "type": "integer",
+          "nullable": true
+        },
+        {
+          "name": "transaction_count",
+          "type": "integer",
+          "nullable": true
+        },
+        {
+          "name": "error_code",
+          "type": "smallint",
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp without time zone",
+          "nullable": false
+        },
+        {
+          "name": "buyer_count",
+          "type": "integer",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "transaction_csv_uploads_pkey",
+          "def": "CREATE UNIQUE INDEX transaction_csv_uploads_pkey ON marianne.csv_uploads USING btree (id)",
+          "table": "marianne.csv_uploads",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "csv_uploads_shop_code_idx",
+          "def": "CREATE INDEX csv_uploads_shop_code_idx ON marianne.csv_uploads USING btree (shop_code)",
+          "table": "marianne.csv_uploads",
+          "columns": [
+            "shop_code"
+          ]
+        },
+        {
+          "name": "csv_uploads_shop_code_upload_type_status_idx",
+          "def": "CREATE INDEX csv_uploads_shop_code_upload_type_status_idx ON marianne.csv_uploads USING btree (shop_code, upload_type, status)",
+          "table": "marianne.csv_uploads",
+          "columns": [
+            "shop_code",
+            "upload_type",
+            "status"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "transaction_csv_uploads_user_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)",
+          "table": "marianne.csv_uploads",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "transaction_csv_uploads_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "marianne.csv_uploads",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.shop_contact_users",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "shop_code",
+          "type": "character(10)",
+          "nullable": false
+        },
+        {
+          "name": "contact_code",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "varchar(20)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_shop_contact_users",
+          "def": "CREATE UNIQUE INDEX pk_shop_contact_users ON marianne.shop_contact_users USING btree (shop_code, contact_code)",
+          "table": "marianne.shop_contact_users",
+          "columns": [
+            "shop_code",
+            "contact_code"
+          ]
+        },
+        {
+          "name": "uq_shop_contact_users",
+          "def": "CREATE UNIQUE INDEX uq_shop_contact_users ON marianne.shop_contact_users USING btree (shop_code, user_id)",
+          "table": "marianne.shop_contact_users",
+          "columns": [
+            "shop_code",
+            "user_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "fk_shop_contact_users_user_id",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)",
+          "table": "marianne.shop_contact_users",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "pk_shop_contact_users",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (shop_code, contact_code)",
+          "table": "marianne.shop_contact_users",
+          "referenced_table": "",
+          "columns": [
+            "shop_code",
+            "contact_code"
+          ]
+        },
+        {
+          "name": "uq_shop_contact_users",
+          "type": "UNIQUE",
+          "def": "UNIQUE (shop_code, user_id)",
+          "table": "marianne.shop_contact_users",
+          "referenced_table": "",
+          "columns": [
+            "shop_code",
+            "user_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.user_invitations",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "varchar(10)",
+          "nullable": false
+        },
+        {
+          "name": "shop_code",
+          "type": "character(10)",
+          "nullable": false
+        },
+        {
+          "name": "invite_code",
+          "type": "varchar(64)",
+          "nullable": false
+        },
+        {
+          "name": "contact_code",
+          "type": "smallint",
+          "nullable": true
+        },
+        {
+          "name": "invite_limit_at",
+          "type": "timestamp without time zone",
+          "nullable": false
+        },
+        {
+          "name": "send_mail_flag",
+          "type": "varchar(2)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_user_invitations",
+          "def": "CREATE UNIQUE INDEX pk_user_invitations ON marianne.user_invitations USING btree (user_id, shop_code)",
+          "table": "marianne.user_invitations",
+          "columns": [
+            "user_id",
+            "shop_code"
+          ]
+        },
+        {
+          "name": "uq_user_invitations_invite_code",
+          "def": "CREATE UNIQUE INDEX uq_user_invitations_invite_code ON marianne.user_invitations USING btree (invite_code)",
+          "table": "marianne.user_invitations",
+          "columns": [
+            "invite_code"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "fk_user_invitations_user_id",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)",
+          "table": "marianne.user_invitations",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "pk_user_invitations",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (user_id, shop_code)",
+          "table": "marianne.user_invitations",
+          "referenced_table": "",
+          "columns": [
+            "user_id",
+            "shop_code"
+          ]
+        },
+        {
+          "name": "uq_user_invitations_invite_code",
+          "type": "UNIQUE",
+          "def": "UNIQUE (invite_code)",
+          "table": "marianne.user_invitations",
+          "referenced_table": "",
+          "columns": [
+            "invite_code"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.shop_csv_heading",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "shop_code",
+          "type": "character(10)",
+          "nullable": false
+        },
+        {
+          "name": "format_type",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "np_header_id",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "shop_header_name",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "varchar(10)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_shop_csv_heading",
+          "def": "CREATE UNIQUE INDEX pk_shop_csv_heading ON marianne.shop_csv_heading USING btree (shop_code, format_type, np_header_id)",
+          "table": "marianne.shop_csv_heading",
+          "columns": [
+            "shop_code",
+            "format_type",
+            "np_header_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "pk_shop_csv_heading",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (shop_code, format_type, np_header_id)",
+          "table": "marianne.shop_csv_heading",
+          "referenced_table": "",
+          "columns": [
+            "shop_code",
+            "format_type",
+            "np_header_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "marianne.shop_csv_exclusion_heading",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "shop_code",
+          "type": "character(10)",
+          "nullable": false
+        },
+        {
+          "name": "format_type",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "shop_header_name",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp without time zone",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "varchar(10)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_shop_csv_exclusion_heading",
+          "def": "CREATE UNIQUE INDEX pk_shop_csv_exclusion_heading ON marianne.shop_csv_exclusion_heading USING btree (shop_code, format_type, shop_header_name)",
+          "table": "marianne.shop_csv_exclusion_heading",
+          "columns": [
+            "shop_code",
+            "format_type",
+            "shop_header_name"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "pk_shop_csv_exclusion_heading",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (shop_code, format_type, shop_header_name)",
+          "table": "marianne.shop_csv_exclusion_heading",
+          "referenced_table": "",
+          "columns": [
+            "shop_code",
+            "format_type",
+            "shop_header_name"
+          ]
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "marianne.user_shops",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "marianne.users",
+      "parent_columns": [
+        "user_id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)"
+    },
+    {
+      "table": "marianne.csv_uploads",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "marianne.users",
+      "parent_columns": [
+        "user_id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)"
+    },
+    {
+      "table": "marianne.shop_contact_users",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "marianne.users",
+      "parent_columns": [
+        "user_id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)"
+    },
+    {
+      "table": "marianne.user_invitations",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "marianne.users",
+      "parent_columns": [
+        "user_id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(user_id)"
+    }
+  ],
+  "driver": {
+    "name": "postgres",
+    "database_version": "PostgreSQL 16.6 (Debian 16.6-1.pgdg120+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit",
+    "meta": {
+      "current_schema": "marianne",
+      "search_paths": [
+        "marianne"
+      ],
+      "dict": {
+        "Functions": "Stored procedures and functions"
+      }
+    }
+  }
+}
